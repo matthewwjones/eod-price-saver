@@ -14,6 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Package Lambda
+        run: |
+          pip install -r requirements.txt -t dist/
+          cp -r src/ dist/src/
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
