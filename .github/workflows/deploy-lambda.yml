@@ -31,3 +31,5 @@ jobs:
         with:
           function-name: eod-price-saver
           code-artifacts-dir: ./dist
+          runtime: python3.11
+          handler: handler.lambda_handler
