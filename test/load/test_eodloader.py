@@ -37,5 +37,4 @@ class TestEodLoader(TestCase):
         loader.load_prices()
 
         called_url = mock_get.call_args[0][0]
-        self.assertIn('from=2024-03-22', called_url)
-        self.assertIn('to=2024-03-22', called_url)
+        self.assertIn('from=2024-03-15', called_url)

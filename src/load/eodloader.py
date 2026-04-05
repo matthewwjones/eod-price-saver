@@ -21,9 +21,9 @@ class EodLoader:
         return eod_prices
 
     def load_eod_for_instrument(self, instrument):
-        date_str = self.load_date.strftime('%Y-%m-%d')
-        url = 'https://eodhd.com/api/eod/%s?api_token=%s&order=d&fmt=json&from=%s&to=%s' % (
-            instrument, self.api_token, date_str, date_str)
+        date_str = (self.load_date - datetime.timedelta(weeks=1)).strftime('%Y-%m-%d')
+        url = 'https://eodhd.com/api/eod/%s?api_token=%s&order=d&fmt=json&filter=last_close&from=%s' % (
+            instrument, self.api_token, date_str)
         self.log.info(f'Loading EOD price for {instrument} from {url}')
         try:
             response = requests.get(url).json()

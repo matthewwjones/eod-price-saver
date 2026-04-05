@@ -4,7 +4,6 @@ import os
 from config.instrumentcodeloader import InstrumentCodeLoader
 from load.eodloader import EodLoader
 
-
 class App:
 
     def __init__(self):

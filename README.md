@@ -23,6 +23,8 @@ Add or remove instruments by editing `instrument-codes.txt` — one code per lin
 
 ## Running locally
 
+Fetches and logs prices without sending email:
+
 ```bash
 EOD_LOADER_API_TOKEN=<your-token> python -m src.__main__
 ```
@@ -33,7 +35,7 @@ Reads instrument codes from `instrument-codes.txt` at the repo root.
 
 Pushing to `main` triggers the [deploy workflow](.github/workflows/deploy-lambda.yml), which packages the source and dependencies and deploys to the `eod-price-saver` Lambda function.
 
-The Lambda handler is `handler.lambda_handler`.
+The Lambda handler is `src.__main__.lambda_handler`.
 
 ## Running tests
 

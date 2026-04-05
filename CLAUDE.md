@@ -20,10 +20,10 @@ EOD_LOADER_API_TOKEN=<token> python -m src.__main__
 
 ## Architecture
 
-There are two entry points in `src/__main__.py`:
+There are two entry points:
 
-- **Local run** (`if __name__ == "__main__"`) — uses `App` (`src/app.py`), which reads instrument codes from `instrument-codes.txt` at the repo root and the API token from `EOD_LOADER_API_TOKEN`
-- **Lambda** (`lambda_handler`) — uses `EodPriceLoaderApp` (`src/eodpriceloaderapp.py`), which reads all config from environment variables and emails results via SES
+- **Local run** — `src/__main__.py` (`if __name__ == "__main__"`) uses `App` (`src/app.py`), which reads instrument codes from `instrument-codes.txt` at the repo root and the API token from `EOD_LOADER_API_TOKEN`
+- **Lambda** — `src/__main__.py` (`lambda_handler`) uses `EodPriceLoaderApp` (`src/eodpriceloaderapp.py`), which reads instrument codes from the bundled `instrument-codes.txt` and remaining config from environment variables
 
 ### Key classes
 
@@ -36,7 +36,6 @@ There are two entry points in `src/__main__.py`:
 | Variable | Purpose |
 |---|---|
 | `EOD_LOADER_API_TOKEN` | EODHD API key |
-| `EOD_LOADER_INSTRUMENT_CODES` | Comma-separated instrument codes |
 | `EOD_LOADER_AWS_REGION` | SES region |
 | `EOD_LOADER_EMAIL_TO` | Recipient address |
 | `EOD_LOADER_EMAIL_FROM` | Verified SES sender address |
