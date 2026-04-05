@@ -3,6 +3,8 @@ import os
 
 from config.instrumentcodeloader import InstrumentCodeLoader
 from load.eodloader import EodLoader
+from notify.priceemailbody import PriceEmailBody
+
 
 class App:
 
@@ -14,4 +16,5 @@ class App:
         self.log.info("Starting EOD price loader app...")
         instrument_codes = InstrumentCodeLoader(self.instrument_codes_file).load_instrument_codes()
         api_token = os.environ['EOD_LOADER_API_TOKEN']
-        EodLoader(api_token, instrument_codes).load_prices()
+        prices = EodLoader(api_token, instrument_codes).load_prices()
+        self.log.info('\n' + PriceEmailBody(prices).build_terminal())

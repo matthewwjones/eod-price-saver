@@ -11,30 +11,28 @@ class TestEodLoader(TestCase):
         "volume": 44846000}
     ]
 
-    def test_extract_close_from_response_returns_expected_value(self):
-        loader = EodLoader(None, [])
-        close_price = loader.extract_close_from_response(self.json)
-        self.assertEqual(close_price, 170.77)
+    def test_extract_from_response_returns_date_and_close(self):
+        date, close = EodLoader.extract_from_response(self.json)
+        self.assertEqual(date, "2023-10-31")
+        self.assertEqual(close, 170.77)
 
     @patch('src.load.eodloader.requests.get')
-    def test_load_prices_returns_price_dict(self, mock_get):
+    def test_load_prices_returns_date_and_close_per_instrument(self, mock_get):
         mock_response = MagicMock()
         mock_response.json.return_value = self.json
         mock_get.return_value = mock_response
 
-        loader = EodLoader('test-token', ['AAPL.US'], load_date=datetime.date(2024, 1, 15))
-        result = loader.load_prices()
+        prices = EodLoader('test-token', ['AAPL.US'], load_date=datetime.date(2024, 1, 15)).load_prices()
 
-        self.assertEqual(result, {'AAPL.US': 170.77})
+        self.assertEqual(prices, {'AAPL.US': ('2023-10-31', 170.77)})
 
     @patch('src.load.eodloader.requests.get')
-    def test_load_prices_uses_date_in_url(self, mock_get):
+    def test_load_prices_uses_one_week_lookback_in_url(self, mock_get):
         mock_response = MagicMock()
         mock_response.json.return_value = self.json
         mock_get.return_value = mock_response
 
-        loader = EodLoader('my-token', ['ISF.LSE'], load_date=datetime.date(2024, 3, 22))
-        loader.load_prices()
+        EodLoader('my-token', ['ISF.LSE'], load_date=datetime.date(2024, 3, 22)).load_prices()
 
         called_url = mock_get.call_args[0][0]
         self.assertIn('from=2024-03-15', called_url)

@@ -24,6 +24,5 @@ class EodPriceLoaderApp:
 
     def run(self):
         self.log.info("Starting EOD price loader app...")
-        today = datetime.date.today()
-        prices = EodLoader(self.api_token, self.instrument_codes, load_date=today).load_prices()
-        self.notifier.send_prices(prices, today)
+        prices = EodLoader(self.api_token, self.instrument_codes).load_prices()
+        self.notifier.send_prices(prices)

@@ -1,5 +1,7 @@
 import logging
 
+from .priceemailbody import PriceEmailBody
+
 
 class SesNotifier:
 
@@ -9,20 +11,17 @@ class SesNotifier:
         self.recipient = recipient
         self.sender = sender
 
-    def send_prices(self, prices, date):
-        date_str = date.strftime('%Y-%m-%d')
+    def send_prices(self, prices):
+        email_body = PriceEmailBody(prices)
         response = self.ses_client.send_email(
             Destination={'ToAddresses': [self.recipient]},
             Message={
-                'Body': {'Text': {'Charset': 'UTF-8', 'Data': self._format_body(prices, date_str)}},
-                'Subject': {'Charset': 'UTF-8', 'Data': f'EOD Prices - {date_str}'},
+                'Body': {
+                    'Html': {'Charset': 'UTF-8', 'Data': email_body.build_html()},
+                    'Text': {'Charset': 'UTF-8', 'Data': email_body.build()},
+                },
+                'Subject': {'Charset': 'UTF-8', 'Data': f'EOD Prices - {email_body.most_recent_date()}'},
             },
             Source=self.sender,
         )
         self.log.info(f"Email sent. MessageId: {response['MessageId']}")
-
-    def _format_body(self, prices, date_str):
-        lines = [f'EOD Closing Prices - {date_str}', '']
-        for instrument, price in prices.items():
-            lines.append(f'{instrument}: {price if price is not None else "N/A"}')
-        return '\n'.join(lines)

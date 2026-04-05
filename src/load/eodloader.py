@@ -22,16 +22,16 @@ class EodLoader:
 
     def load_eod_for_instrument(self, instrument):
         date_str = (self.load_date - datetime.timedelta(weeks=1)).strftime('%Y-%m-%d')
-        url = 'https://eodhd.com/api/eod/%s?api_token=%s&order=d&fmt=json&filter=last_close&from=%s' % (
+        url = 'https://eodhd.com/api/eod/%s?api_token=%s&order=d&fmt=json&from=%s' % (
             instrument, self.api_token, date_str)
         self.log.info(f'Loading EOD price for {instrument} from {url}')
         try:
             response = requests.get(url).json()
             self.log.info(f"Fetched {response}")
-            return self.extract_close_from_response(response)
+            return self.extract_from_response(response)
         except Exception as e:
             self.log.exception(f'Error loading price for instrument {instrument} - {e}')
 
     @staticmethod
-    def extract_close_from_response(response):
-        return response[0]['close']
+    def extract_from_response(response):
+        return response[0]['date'], response[0]['close']
