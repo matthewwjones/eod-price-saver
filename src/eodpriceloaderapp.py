@@ -4,8 +4,11 @@ import os
 
 import boto3
 
+from config.instrumentcodeloader import InstrumentCodeLoader
 from load.eodloader import EodLoader
 from notify.sesnotifier import SesNotifier
+
+INSTRUMENT_CODES_FILE = '../instrument-codes.txt'
 
 
 class EodPriceLoaderApp:
@@ -13,7 +16,7 @@ class EodPriceLoaderApp:
     def __init__(self):
         self.log = logging.getLogger(__name__)
         self.api_token = os.environ['EOD_LOADER_API_TOKEN']
-        self.instrument_codes = [c.strip() for c in os.environ['EOD_LOADER_INSTRUMENT_CODES'].split(',') if c.strip()]
+        self.instrument_codes = InstrumentCodeLoader(INSTRUMENT_CODES_FILE).load_instrument_codes()
         ses_client = boto3.client('ses', region_name=os.environ['EOD_LOADER_AWS_REGION'])
         self.notifier = SesNotifier(ses_client,
                                     os.environ['EOD_LOADER_EMAIL_TO'],
