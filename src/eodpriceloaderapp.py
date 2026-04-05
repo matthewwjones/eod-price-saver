@@ -8,7 +8,7 @@ from config.instrumentcodeloader import InstrumentCodeLoader
 from load.eodloader import EodLoader
 from notify.sesnotifier import SesNotifier
 
-INSTRUMENT_CODES_FILE = '../instrument-codes.txt'
+INSTRUMENT_CODES_FILE = os.path.join(os.path.dirname(__file__), '..', 'instrument-codes.txt')
 
 
 class EodPriceLoaderApp:
