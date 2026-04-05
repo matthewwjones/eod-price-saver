@@ -18,8 +18,8 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
-          aws-region: ${{ env.AWS_REGION }}
-
+          aws-region: us-east-1
+          
       - name: Deploy Lambda Function
         uses: aws-actions/aws-lambda-deploy@v1
         with:
