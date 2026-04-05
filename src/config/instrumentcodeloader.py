@@ -11,7 +11,7 @@ class InstrumentCodeLoader:
         self.log.info(f"Loading instrument codes from {self.instrument_codes_file}")
         try:
             with open(self.instrument_codes_file) as file:
-                instruments = [line.rstrip() for line in file]
+                instruments = [line.rstrip() for line in file if line.strip() and not line.startswith('#')]
             self.log.info(f"Loaded {len(instruments)} instruments from {self.instrument_codes_file}.")
             return instruments
         except FileNotFoundError as e:

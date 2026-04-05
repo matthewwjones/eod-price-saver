@@ -19,7 +19,7 @@ On each invocation the Lambda reads `instrument-codes.txt`, fetches the closing 
 
 ### Instruments
 
-Add or remove instruments by editing `instrument-codes.txt` — one code per line (e.g. `ISF.LSE`). The file is bundled into the Lambda deployment package on each deploy.
+Add or remove instruments by editing `instrument-codes.txt` — one code per line (e.g. `ISF.LSE`). Lines beginning with `#` are treated as comments and ignored. The file is bundled into the Lambda deployment package on each deploy.
 
 ## Running locally
 
