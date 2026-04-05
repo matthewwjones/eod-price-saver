@@ -33,3 +33,4 @@ jobs:
           code-artifacts-dir: ./dist
           runtime: python3.11
           handler: src.__main__.lambda_handler
+          timeout: 30
