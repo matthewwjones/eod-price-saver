@@ -21,7 +21,7 @@ class EodLoader:
         return eod_prices
 
     def load_eod_for_instrument(self, instrument):
-        date_str = (self.load_date - datetime.timedelta(weeks=1)).strftime('%Y-%m-%d')
+        date_str = (self.load_date - datetime.timedelta(weeks=3)).strftime('%Y-%m-%d')
         url = 'https://eodhd.com/api/eod/%s?api_token=%s&order=d&fmt=json&from=%s' % (
             instrument, self.api_token, date_str)
         self.log.info(f'Loading EOD price for {instrument} from {url}')
@@ -34,4 +34,4 @@ class EodLoader:
 
     @staticmethod
     def extract_from_response(response):
-        return response[0]['date'], response[0]['close']
+        return [(r['date'], r['close']) for r in response[:10]]

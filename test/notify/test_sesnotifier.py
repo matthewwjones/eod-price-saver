@@ -11,7 +11,7 @@ class TestSesNotifier(TestCase):
         mock_ses.send_email.return_value = {'MessageId': 'test-id'}
         notifier = SesNotifier(mock_ses, 'to@example.com', 'from@example.com')
 
-        notifier.send_prices({'VTI.US': ('2024-01-15', 255.92), 'BTC-USD.CC': ('2024-01-14', 42000.0)})
+        notifier.send_prices({'VTI.US': [('2024-01-15', 255.92)], 'BTC-USD.CC': [('2024-01-14', 42000.0)]})
 
         subject = mock_ses.send_email.call_args[1]['Message']['Subject']['Data']
         self.assertIn('2024-01-15', subject)

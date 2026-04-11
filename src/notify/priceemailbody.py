@@ -3,16 +3,29 @@ class PriceEmailBody:
     def __init__(self, prices):
         self.prices = prices
 
+    def _price_maps(self):
+        return {
+            instrument: {date: close for date, close in (entries or [])}
+            for instrument, entries in self.prices.items()
+        }
+
+    def _all_dates(self):
+        return sorted(
+            {date for entries in self.prices.values() if entries for date, _ in entries},
+            reverse=True
+        )
+
     def build(self):
         instruments = list(self.prices.keys())
-        dates = sorted({v[0] for v in self.prices.values() if v is not None}, reverse=True)
+        dates = self._all_dates()
+        price_maps = self._price_maps()
 
         header = ' | '.join(['Date'] + instruments)
         rows = [header]
         if dates:
             for date in dates:
                 row = [date] + [
-                    str(self.prices[i][1]) if self.prices[i] is not None and self.prices[i][0] == date else 'N/A'
+                    str(price_maps[i][date]) if date in price_maps[i] else 'N/A'
                     for i in instruments
                 ]
                 rows.append(' | '.join(row))
@@ -22,7 +35,8 @@ class PriceEmailBody:
 
     def build_html(self):
         instruments = list(self.prices.keys())
-        dates = sorted({v[0] for v in self.prices.values() if v is not None}, reverse=True)
+        dates = self._all_dates()
+        price_maps = self._price_maps()
 
         th_style = 'border: 1px solid #ccc; padding: 6px 12px; background-color: #f2f2f2; text-align: left;'
         td_style = 'border: 1px solid #ccc; padding: 6px 12px;'
@@ -34,7 +48,7 @@ class PriceEmailBody:
             data_rows = ''
             for date in dates:
                 cells = [date] + [
-                    str(self.prices[i][1]) if self.prices[i] is not None and self.prices[i][0] == date else 'N/A'
+                    str(price_maps[i][date]) if date in price_maps[i] else 'N/A'
                     for i in instruments
                 ]
                 data_rows += '<tr>' + ''.join(f'<td style="{td_style}">{c}</td>' for c in cells) + '</tr>'
@@ -47,13 +61,11 @@ class PriceEmailBody:
     def build_terminal(self):
         from tabulate import tabulate
         instruments = list(self.prices.keys())
-        dates = sorted({v[0] for v in self.prices.values() if v is not None}, reverse=True)
+        dates = self._all_dates()
+        price_maps = self._price_maps()
         if dates:
             rows = [
-                [date] + [
-                    self.prices[i][1] if self.prices[i] is not None and self.prices[i][0] == date else 'N/A'
-                    for i in instruments
-                ]
+                [date] + [price_maps[i].get(date, 'N/A') for i in instruments]
                 for date in dates
             ]
         else:
@@ -61,4 +73,7 @@ class PriceEmailBody:
         return tabulate(rows, headers=['Date'] + instruments, tablefmt='fancy_grid')
 
     def most_recent_date(self):
-        return max((v[0] for v in self.prices.values() if v is not None), default='N/A')
+        return max(
+            (date for entries in self.prices.values() if entries for date, _ in entries),
+            default='N/A'
+        )
